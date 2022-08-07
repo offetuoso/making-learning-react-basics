@@ -2,141 +2,137 @@
 <html lang="ko">
 
 
-
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>고양이 가라사대</title>
+    <meta charset="UTF-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>고양이 가라사대</title>
 </head>
 <style>
-  body {
-    text-align: center;
-  }
+    body {
+        text-align: center;
+    }
 
-  .main-card button {
-    position: relative;
-    left: -45px;
-    bottom: 15px;
-  }
+    .main-card button {
+        position: relative;
+        left: -45px;
+        bottom: 15px;
+    }
 
-  .favorites {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
+    .favorites {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
 
-  /*.favorites img {
-    width: 150px;
-  }*/
+    /*.favorites img {
+      width: 150px;
+    }*/
 </style>
 <script type="text/babel">
-  console.log("야옹");
+    console.log("야옹");
 
-  function CatItem(props) {
+    function CatItem(props) {
 
-    return (
-      <li>
-        <img
-          src={props.img}
-          alt={props.title}
-          style={{ width: '150px' /*, border: '1px solid red'*/ }} //스타일 자체를 props로 넘기기 {} 새로운 객체로 묶어 보냄
-        />
-      </li>
-    )
-  }
-
-  const Title = (props) => {
-    console.log(props.children)
-    return <h1>{props.children}</h1>
-  }
-
-
-  function Favorites() {
-    return (
-      <ul className="favorites">
-        <CatItem img="https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn" title="CAT2" />
-        <CatItem img="https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript" title="CAT3" />
-      </ul>
-    )
-  }
-
-
-  const MainCard = ({ img }) => {
-    function handleHeartClick() {
-      console.log("하트 눌렸음")
+        return (
+            <li>
+                <img
+                    src={props.img}
+                    alt={props.title}
+                    style={{width: '150px' /*, border: '1px solid red'*/}} //스타일 자체를 props로 넘기기 {} 새로운 객체로 묶어 보냄
+                />
+            </li>
+        )
     }
-    function handleHeartMouseOver() {
-      console.log("하트 스쳐 지나감")
-    }
-    return (
-      <div className="main-card">
-        <img
-          src={img}
-          alt="고양이"
-          width="400"
-        />
 
-        <button onClick={handleHeartClick} onMouseOver={handleHeartMouseOver}>🤍</button>
-      </div>
-    )
-  }
-
-  const Form = ({ handelFormSubmit }) => {
-    return (
-      <form onSubmit={handelFormSubmit}>
-        <input type="text" name="name" placeholder="영어 대사를 입력해주세요" />
-        <button type="submit">생성</button>
-      </form>
-    )
-  }
-
-  /*const app = (
-    <div>
-      <Title>1번째 고양이 가라사대</Title>
-      <Form />
-      <MainCard img="https://cataas.com/cat/60b73094e04e18001194a309/says/react" title="CAT1" />
-      <Favorites />
-    </div>
-  );*/
-
-  const App = () => {
-
-    const CAT1 = "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
-    const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
-    const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
-
-    const [counter, setCounter] = React.useState(1);
-    const [mainCat, setMainCat] = React.useState(CAT1);
-
-    console.log("카운터", counter)
-
-
-
-    function handelFormSubmit(event) {
-      event.preventDefault();
-      setCounter(counter + 1)
-      setMainCat(CAT2);
-      console.log(counter + " 폼 전송 " + mainCat);
+    const Title = (props) => {
+        console.log(props.children)
+        return <h1>{props.children}</h1>
     }
 
 
-    return (
-      <div>
-        <Title>{counter} 번째 고양이 가라사대</Title>
-        <Form handelFormSubmit={handelFormSubmit} />
-        <MainCard img={mainCat} title="CAT1" />
-        <Favorites />
-      </div>
-    )
-  }
+    function Favorites() {
+        const CAT1 = "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
+        const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
+        const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
+
+        const cats = [CAT1, CAT2];
+
+        return (
+            <ul className="favorites">
+                {cats.map(cat => <CatItem img={cat} title="CAT2" key={cat}/>)}
+            </ul>
+        )
+    }
 
 
-  const 여기다그려 = document.querySelector("#app");
+    const MainCard = ({img}) => {
+        function handleHeartClick() {
+            console.log("하트 눌렸음")
+        }
 
-  ReactDOM.render(<App />, 여기다그려);
+        function handleHeartMouseOver() {
+            console.log("하트 스쳐 지나감")
+        }
+
+        return (
+            <div className="main-card">
+                <img
+                    src={img}
+                    alt="고양이"
+                    width="400"
+                />
+
+                <button onClick={handleHeartClick} onMouseOver={handleHeartMouseOver}>🤍</button>
+            </div>
+        )
+    }
+
+    const Form = ({handelFormSubmit}) => {
+        return (
+            <form onSubmit={handelFormSubmit}>
+                <input type="text" name="name" placeholder="영어 대사를 입력해주세요"/>
+                <button type="submit">생성</button>
+            </form>
+        )
+    }
+
+    const App = () => {
+
+        const CAT1 = "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
+        const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
+        const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
+
+        const [counter, setCounter] = React.useState(1);
+        const [mainCat, setMainCat] = React.useState(CAT1);
+
+        console.log("카운터", counter)
+
+
+        function handelFormSubmit(event) {
+            event.preventDefault();
+            setCounter(counter + 1)
+            setMainCat(CAT2);
+            console.log(counter + " 폼 전송 " + mainCat);
+        }
+
+
+        return (
+            <div>
+                <Title>{counter} 번째 고양이 가라사대</Title>
+                <Form handelFormSubmit={handelFormSubmit}/>
+                <MainCard img={mainCat} title="CAT1"/>
+                <Favorites/>
+            </div>
+        )
+    }
+
+
+    const 여기다그려 = document.querySelector("#app");
+
+    ReactDOM.render(<App/>, 여기다그려);
 
 </script>
 
@@ -145,8 +141,8 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <body>
-  <div id="app">
-  </div>
+<div id="app">
+</div>
 </body>
 
 </html>
