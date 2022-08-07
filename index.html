@@ -53,29 +53,17 @@
     }
 
 
-    function Favorites() {
-        const CAT1 = "https://cataas.com/cat/60b73094e04e18001194a309/says/react";
-        const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
-        const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
-
-        const cats = [CAT1, CAT2];
+    function Favorites({favorites}) {
 
         return (
             <ul className="favorites">
-                {cats.map(cat => <CatItem img={cat} title="CAT2" key={cat}/>)}
+                {favorites.map(cat => <CatItem img={cat} title="CAT2" key={cat}/>)}
             </ul>
         )
     }
 
 
-    const MainCard = ({img}) => {
-        function handleHeartClick() {
-            console.log("하트 눌렸음")
-        }
-
-        function handleHeartMouseOver() {
-            console.log("하트 스쳐 지나감")
-        }
+    const MainCard = ({img, handleHeartClick}) => {
 
         return (
             <div className="main-card">
@@ -85,7 +73,7 @@
                     width="400"
                 />
 
-                <button onClick={handleHeartClick} onMouseOver={handleHeartMouseOver}>🤍</button>
+                <button onClick={handleHeartClick}>🤍</button>
             </div>
         )
     }
@@ -107,6 +95,7 @@
 
         const [counter, setCounter] = React.useState(1);
         const [mainCat, setMainCat] = React.useState(CAT1);
+        const [favorites, setFavorites] = React.useState([]);
 
         console.log("카운터", counter)
 
@@ -118,13 +107,18 @@
             console.log(counter + " 폼 전송 " + mainCat);
         }
 
+        function handleHeartClick() {
+            console.log("하트 눌렸음")
+            let like_it = document.querySelector(".main-card").querySelector("img").src;
+            setFavorites([...favorites, like_it]);
+        }
 
         return (
             <div>
                 <Title>{counter} 번째 고양이 가라사대</Title>
                 <Form handelFormSubmit={handelFormSubmit}/>
-                <MainCard img={mainCat} title="CAT1"/>
-                <Favorites/>
+                <MainCard img={mainCat} title="CAT1" handleHeartClick={handleHeartClick}/>
+                <Favorites favorites={favorites}/>
             </div>
         )
     }
