@@ -32,7 +32,15 @@
     }*/
 </style>
 <script type="text/babel">
-    console.log("야옹");
+
+    const jsonLocalStorage = {
+        setItem: (key, value) => {
+            localStorage.setItem(key, JSON.stringify(value));
+        },
+        getItem: (key) => {
+            return JSON.parse(localStorage.getItem(key));
+        },
+    };
 
     function CatItem(props) {
 
@@ -63,7 +71,7 @@
     }
 
 
-    const MainCard = ({img, handleHeartClick}) => {
+    const MainCard = ({img, onHeartClick}) => {
 
         return (
             <div className="main-card">
@@ -73,15 +81,49 @@
                     width="400"
                 />
 
-                <button onClick={handleHeartClick}>🤍</button>
+                <button onClick={onHeartClick}>🤍</button>
             </div>
         )
     }
 
-    const Form = ({handelFormSubmit}) => {
+    const Form = ({updateMainCat}) => {
+        const [value, setValue] = React.useState('');
+        const [errorMessage, setErrorMessage] = React.useState('');
+        const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+
+        function handelFormSubmit(e) {
+            e.preventDefault();
+            setErrorMessage("");
+
+            if (value === '') {
+                setErrorMessage("빈 값으로 만들 수 없습니다.");
+                return false;
+            }
+
+            updateMainCat();
+
+        }
+
+        function handleInputChange(e) {
+            const userValue = e.target.value;
+            setErrorMessage("");
+            if (includesHangul(e.target.value)) {
+                //alert("한글은 입력할 수 없습니다.");
+                setErrorMessage("한글은 입력할 수 없습니다.");
+                return false;
+            }
+            setValue(userValue.toUpperCase());
+        }
+
         return (
             <form onSubmit={handelFormSubmit}>
-                <input type="text" name="name" placeholder="영어 대사를 입력해주세요"/>
+                <input type="text"
+                       name="name"
+                       placeholder="영어 대사를 입력해주세요"
+                       value={value}
+                       onChange={handleInputChange}
+                />
+                <p style={{color: 'red'}}>{errorMessage}</p>
                 <button type="submit">생성</button>
             </form>
         )
@@ -93,31 +135,34 @@
         const CAT2 = "https://cataas.com//cat/5e9970351b7a400011744233/says/inflearn";
         const CAT3 = "https://cataas.com/cat/595f280b557291a9750ebf65/says/JavaScript";
 
-        const [counter, setCounter] = React.useState(1);
+
+        const [counter, setCounter] = React.useState(
+            jsonLocalStorage.getItem("counter") || 0
+        );
         const [mainCat, setMainCat] = React.useState(CAT1);
-        const [favorites, setFavorites] = React.useState([]);
+        const [favorites, setFavorites] = React.useState(
+            jsonLocalStorage.getItem("favorites") || []
+        );
 
-        console.log("카운터", counter)
 
-
-        function handelFormSubmit(event) {
-            event.preventDefault();
-            setCounter(counter + 1)
+        function updateMainCat() {
+            const nextCounter = counter + 1;
             setMainCat(CAT2);
-            console.log(counter + " 폼 전송 " + mainCat);
+            setCounter(nextCounter)
+            jsonLocalStorage.setItem("counter", nextCounter);
         }
 
         function handleHeartClick() {
-            console.log("하트 눌렸음")
-            let like_it = document.querySelector(".main-card").querySelector("img").src;
-            setFavorites([...favorites, like_it]);
+            const nextFavorites = [...favorites, mainCat]
+            setFavorites(nextFavorites);
+            jsonLocalStorage.setItem("favorites", nextFavorites);
         }
 
         return (
             <div>
                 <Title>{counter} 번째 고양이 가라사대</Title>
-                <Form handelFormSubmit={handelFormSubmit}/>
-                <MainCard img={mainCat} title="CAT1" handleHeartClick={handleHeartClick}/>
+                <Form updateMainCat={updateMainCat}/>
+                <MainCard img={mainCat} title="CAT1" onHeartClick={handleHeartClick}/>
                 <Favorites favorites={favorites}/>
             </div>
         )
