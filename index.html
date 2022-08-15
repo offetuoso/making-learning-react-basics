@@ -187,10 +187,6 @@
             jsonLocalStorage.getItem("favorites") || []
         );
 
-        const [objects, setObjects] = React.useState(
-            jsonLocalStorage.getItem("objects") || []
-        );
-
         const [value, setValue] = React.useState('');
         const [errorMessage, setErrorMessage] = React.useState('');
         const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
@@ -290,6 +286,75 @@
 <script crossorigin="anonymous"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    function fnToggleButtonTranslatePage() {
+        if (btnTranslatePage.style.display == "none") {
+            localStorage.setItem("0k0aTranslatePage", "false");
+            var oTrFrame = document.querySelector("body > div.skiptranslate");
+            if (oTrFrame != undefined) oTrFrame.style.display = "none";
+            btnTranslatePage.setAttribute("style", "color:black;display:block;");
+        } else {
+            localStorage.setItem("0k0aTranslatePage", "true");
+            location.reload();
+        }
+    }
+
+    function fnTryTranslatePage(iTryCnt) {
+        var bTranslated = false;
+        var oElement = document.querySelector("#google_translate_element select");
+        if ((oElement != undefined) && (oElement.options != undefined) && (oElement.options.length != undefined) && (oElement.options.length > 0)) {
+            var sNavLang = navigator.language.substr(0, 2);
+            var eEvent = new Event("change");
+            for (var i = 0; i < oElement.options.length; i++) {
+                if (oElement.options[i].value == sNavLang) {
+                    oElement.options[i].selected = true;
+                    oElement.dispatchEvent(eEvent);
+                    bTranslated = true;
+                    break;
+                }
+            }
+            if (bTranslated == false) {
+                for (var i = 0; i < oElement.options.length; i++) {
+                    if (oElement.options[i].value == "en") {
+                        oElement.options[i].selected = true;
+                        oElement.dispatchEvent(eEvent);
+                        bTranslated = true;
+                        break;
+                    }
+                }
+            }
+            var oTrFrame = document.querySelector("body > div.skiptranslate > iframe.goog-te-banner-frame");
+            if (oTrFrame != undefined) {
+                var oTrFrameClose = oTrFrame.contentDocument.querySelector("a.goog-close-link");
+                if (oTrFrameClose != undefined) oTrFrameClose.addEventListener("click", fnToggleButtonTranslatePage);
+            }
+        }
+        if ((bTranslated == false) && (iTryCnt < 32))
+            setTimeout(fnTryTranslatePage, 500, iTryCnt + 1);
+    }
+
+    function fnGoogleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'ko'}, 'google_translate_element');
+        fnTryTranslatePage(0);
+    }
+
+    if ((document.querySelector("#btnTranslatePage") != undefined) && (navigator.language.substr(0, 2) != "ko")) {
+        var b0k0aTranslatePage = localStorage.getItem("0k0aTranslatePage");
+        if ((b0k0aTranslatePage === null) || ((b0k0aTranslatePage !== null) && (b0k0aTranslatePage !== "false"))) {
+            var oHead = document.getElementsByTagName('head')[0];
+            var oAllScript = document.querySelectorAll('head script');
+            for (var i = oAllScript.length - 1; i >= 0; i--) {
+                if (oAllScript[i].src.indexOf("translate.google.com") > -1) oAllScript[i].parentNode.removeChild(oAllScript[i]);
+            }
+            var oScript = document.createElement('script');
+            oScript.type = 'text/javascript';
+            oScript.src = 'https://translate.google.com/translate_a/element.js?cb=fnGoogleTranslateElementInit';
+            oHead.appendChild(oScript);
+        } else btnTranslatePage.setAttribute("style", "color:black;display:block;");
+    }
+</script>
+
 <body>
 <div id="app">
 </div>
