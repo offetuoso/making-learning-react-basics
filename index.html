@@ -13,6 +13,10 @@
         text-align: center;
     }
 
+    li {
+        height: auto;
+    }
+
     .main-card {
         position: relative;
         width: 400px;
@@ -39,8 +43,6 @@
     }
 
     .favorite-card div {
-        min-height: 30px;
-        max-height: 60px;
         width: 100%;
         overflow: hidden;
         z-index: 2;
@@ -152,11 +154,11 @@
         return `${OPEN_API_DOMAIN}${responseJson.url}`;
     };
 
-    function CatItem({img, title, msg, onDownClick}) {
+    function CatItem({id, img, title, msg, onDownClick}) {
 
         return (
             <li>
-                <div className="favorite-card">
+                <div id={`cat_${id}`} className="favorite-card">
                     <img
                         src={img}
                         alt={title}
@@ -165,7 +167,7 @@
                     <div>
                         <span className="card-msg">{msg}</span>
                     </div>
-                    <button onClick={onDownClick} data-html2canvas-ignore="true">💾</button>
+                    <button data-idx={id} onClick={onDownClick} data-html2canvas-ignore="true">💾</button>
                 </div>
             </li>
 
@@ -178,15 +180,15 @@
 
     function Favorites({favorites}) {
 
-        function downImg() {
-            html2canvas(document.querySelector("#main-card"), {
+        function downImg(id) {
+            html2canvas(document.querySelector("#" + id), {
                 logging: true,
                 letterRendering: 1,
                 allowTaint: true,
                 useCORS: true
             }).then(canvas => {
                 var myImage = canvas.toDataURL();
-                downloadURI(myImage, "저장할 파일명.png")
+                downloadURI(myImage, id + ".png")
             })
         }
 
@@ -200,13 +202,15 @@
             link.click();
         }
 
-        function handleDownClick() {
-            downImg();
+        function handleDownClick(e) {
+            e.preventDefault();
+            let idx = e.target.getAttribute('data-idx');
+            downImg('cat_' + idx);
         }
 
         return (
             <ul className="favorites">
-                {favorites.map(cat => <CatItem img={cat.img} msg={cat.msg} title={cat.msg} key={cat.idx}
+                {favorites.map(cat => <CatItem id={cat.idx} img={cat.img} msg={cat.msg} title={cat.msg} key={cat.idx}
                                                onDownClick={handleDownClick}/>)}
             </ul>
         )
