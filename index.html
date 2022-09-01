@@ -221,7 +221,8 @@
     }
 
 
-    const MainCard = ({img, value, onHeartClick}) => {
+    const MainCard = ({img, value, onHeartClick, alreadyFavorite}) => {
+        const heartIcon = alreadyFavorite ? "💖" : "🤍";
         return (
             <div id="main-card" className="main-card">
                 <img
@@ -232,7 +233,7 @@
                 <div>
                     <span className="card-msg">{value}</span>
                 </div>
-                <button onClick={onHeartClick} data-html2canvas-ignore="true">🤍</button>
+                <button onClick={onHeartClick} data-html2canvas-ignore="true">{heartIcon}</button>
             </div>
         )
     }
@@ -253,22 +254,11 @@
         )
     }
 
-    function getData(text, callbackFunc) {
-        if (text == undefined) {
-            text = '';
-        } else {
-            text = '/says/' + text;
-        }
-        $.get('https://cataas.com/cat' + text + '?json=true', function (response) {
-            callbackFunc(response); // 서버에서 받은 데이터 response를 callbackFunc() 함수에 넘겨줌
-        });
-    }
-
-
     const App = () => {
         const [counter, setCounter] = React.useState(
             jsonLocalStorage.getItem("counter") || 1
         );
+
 
         const [mainCat, setMainCat] = React.useState("https://offetuoso.github.io/images/etc/loading/snail-loading.gif");
 
@@ -279,6 +269,10 @@
         const [value, setValue] = React.useState('');
         const [errorMessage, setErrorMessage] = React.useState('');
         const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+        const alreadyFavorite = favorites.includes(mainCat);
+
+
+        console.log(favorites)
 
         React.useEffect(() => {
             updateMainCat();
@@ -322,7 +316,8 @@
                 <Form value={value}
                       onFormSubmit={handleFormSubmit}
                       onInputChange={handleInputChange} errorMessage={errorMessage}/>
-                <MainCard img={mainCat} value={value} title="CAT1" onHeartClick={handleHeartClick}/>
+                <MainCard img={mainCat} value={value} title="CAT1" alreadyFavorite={alreadyFavorite}
+                          onHeartClick={handleHeartClick}/>
                 <Favorites favorites={favorites}/>
             </div>
         )
