@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/making-learning-react-basics/static/css/main.63573e8e.css",
+    "main.js": "/making-learning-react-basics/static/js/main.316f0238.js",
+    "static/js/787.da607d7c.chunk.js": "/making-learning-react-basics/static/js/787.da607d7c.chunk.js",
+    "index.html": "/making-learning-react-basics/index.html",
+    "main.63573e8e.css.map": "/making-learning-react-basics/static/css/main.63573e8e.css.map",
+    "main.316f0238.js.map": "/making-learning-react-basics/static/js/main.316f0238.js.map",
+    "787.da607d7c.chunk.js.map": "/making-learning-react-basics/static/js/787.da607d7c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.63573e8e.css",
+    "static/js/main.316f0238.js"
+  ]
+}
