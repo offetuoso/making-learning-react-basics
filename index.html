@@ -147,7 +147,7 @@
         },
     };
 
-    const fetchCat = async (text) => {
+    const fetchCat = async () => {
         const OPEN_API_DOMAIN = "https://cataas.com";
         const response = await fetch(`${OPEN_API_DOMAIN}/cat?json=true`);
         const responseJson = await response.json();
@@ -255,24 +255,21 @@
     }
 
     const App = () => {
-        const [counter, setCounter] = React.useState(
+        /*const [counter, setCounter] = React.useState(
             jsonLocalStorage.getItem("counter") || 1
-        );
-
+        );*/
+        const [counter, setCounter] = React.useState(() => {
+            return jsonLocalStorage.getItem("counter") || 1;
+        });
 
         const [mainCat, setMainCat] = React.useState("https://offetuoso.github.io/images/etc/loading/snail-loading.gif");
 
-        const [favorites, setFavorites] = React.useState(
-            jsonLocalStorage.getItem("favorites") || []
-        );
-
+        const [favorites, setFavorites] = React.useState(() => {
+            return jsonLocalStorage.getItem("favorites") || [];
+        });
         const [value, setValue] = React.useState('');
         const [errorMessage, setErrorMessage] = React.useState('');
-        const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
-        const alreadyFavorite = favorites.includes(mainCat);
-
-
-        console.log(favorites)
+        const alreadyFavorite = favorites.find(o => o.img === mainCat) != undefined ? true : false;
 
         React.useEffect(() => {
             updateMainCat();
@@ -297,12 +294,15 @@
             setMainCat(newCat);
         }
 
-
         function handleHeartClick() {
-            const nextCounter = Number(counter) + 1;
             const nextFavorites = [...favorites, {"idx": counter, "img": mainCat, "msg": value}]
-            setCounter(nextCounter);
-            jsonLocalStorage.setItem("counter", nextCounter);
+            let nextCounter;
+            setCounter((prev) => {
+                nextCounter = prev + 1;
+                jsonLocalStorage.setItem("counter", nextCounter);
+                return nextCounter;
+            });
+
             setFavorites(nextFavorites);
             setValue("");
             jsonLocalStorage.setItem("favorites", nextFavorites);
@@ -310,9 +310,10 @@
             //downImg();
         }
 
+
         return (
             <div>
-                <Title>{counter} 번째 고양이 가라사대</Title>
+                <Title>{counter > 1 ? `${counter} 번째 ` : ''}고양이 가라사대</Title>
                 <Form value={value}
                       onFormSubmit={handleFormSubmit}
                       onInputChange={handleInputChange} errorMessage={errorMessage}/>
